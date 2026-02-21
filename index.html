@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twins - Educational Demos by Marian Diaz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #fff;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        main {
+            padding: 3rem 0;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .fundamentals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .concept-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .concept-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .demos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .demo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+        }
+
+        .demo-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .demo-content {
+            padding: 2rem;
+        }
+
+        .demo-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .tag {
+            background: #e9ecef;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .demo-btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .demo-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .about-section {
+            background: white;
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .profile-info h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .profile-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            background: #0077b5;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            background: #005885;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .demos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Understand & experiment with Digital Twins</h1>
+            <p>A Digital Twin is a living digital representation of assets, processes, and systems, continuously connected to reality and used to simulate decisions before acting.</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#fundamentals">Learn the fundamentals</a></li>
+                <li><a href="#demos">Start with the demos</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section id="fundamentals">
+            <h2>Digital Twin Fundamentals</h2>
+            <p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 2rem;">
+                <strong>CONCEPTUAL OVERVIEW</strong><br>
+                Use the questions below to explore what makes Digital Twins different from traditional analytics, why they matter for modern organizations, and how they create value when embedded into daily decision-making.
+            </p>
+            
+            <div class="fundamentals-grid">
+                <div class="concept-card">
+                    <div class="concept-number">1</div>
+                    <h3>What a Digital Twin really is</h3>
+                    <p>Modern organizations operate complex, interconnected systems where traditional BI dashboards and intuition are no longer sufficient to anticipate outcomes and manage trade-offs. A Digital Twin is not just a visualization layer — it is a dynamic simulation capability that mirrors reality and allows decision-makers to explore scenarios safely before executing in the real world.</p>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-number">2</div>
+                    <h3>Why Digital Twins are needed</h3>
+                    <p>Across industries and functions, organizations face increasing volatility, operational complexity, and pressure to optimize performance. Digital Twins improve operations, resilience, customer experience, and strategic decision-making by turning complexity into insight. They help teams test decisions in a safe virtual environment before anything changes in production.</p>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-number">3</div>
+                    <h3>Where Digital Twins create value</h3>
+                    <p>From industrial assets and energy systems to supply chains and customer journeys, Digital Twins create value wherever performance, risk, and trade-offs must be balanced. They support predictive maintenance, optimized operations, enhanced safety, and better customer outcomes through scenario-based planning and continuous optimization.</p>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-number">4</div>
+                    <h3>What makes Digital Twins strategic</h3>
+                    <p>At scale, Digital Twins become a management capability that connects strategy and execution through continuous simulation and optimization. They embed "what if" thinking into daily decision cycles, creating a living link between long-term objectives and frontline actions. This makes them highly strategic for leaders managing complex portfolios and systems.</p>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-number">5</div>
+                    <h3>How Digital Twins succeed</h3>
+                    <p>Successful Digital Twins start small and focus on concrete decisions, not on technology for its own sake. They scale progressively through integration, rely on strong IT–OT collaboration, and earn trust through transparency, explainability, and measurable impact. The most successful initiatives are those that learn, adapt, and stay close to real business problems.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="demos">
+            <h2>Interactive Demos</h2>
+            <p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 2rem;">
+                <strong>FROM CONCEPT TO EXPERIENCE</strong>
+            </p>
+            
+            <div class="demos-grid">
+                <div class="demo-card">
+                    <div class="demo-header">
+                        <div class="demo-icon">⚙️</div>
+                        <h3>OPERATIONAL TWIN</h3>
+                        <h4>Turbine Digital Twin</h4>
+                    </div>
+                    <div class="demo-content">
+                        <p>Simulate operational parameters such as gate opening, water height, RPM, temperature, and electricity generation. Explore how to maximize output without triggering alarms.</p>
+                        <div class="demo-tags">
+                            <span class="tag">Real-time telemetry</span>
+                            <span class="tag">Alarms & thresholds</span>
+                            <span class="tag">Optimization</span>
+                        </div>
+                        <p><strong>Best for:</strong> operations & control</p>
+                        <a href="digital-twin-demo.html" class="demo-btn">Open demo</a>
+                    </div>
+                </div>
+                
+                <div class="demo-card">
+                    <div class="demo-header">
+                        <div class="demo-icon">📡</div>
+                        <h3>LOGIC & AUTOMATION</h3>
+                        <h4>Sensor & Alert Simulator</h4>
+                    </div>
+                    <div class="demo-content">
+                        <p>Create virtual sensors, define relationships between them, configure alerts and automated actions. Experience how rules and logic turn raw data into an intelligent system.</p>
+                        <div class="demo-tags">
+                            <span class="tag">Custom sensors</span>
+                            <span class="tag">Alert rules</span>
+                            <span class="tag">Action triggers</span>
+                        </div>
+                        <p><strong>Best for:</strong> data & automation</p>
+                        <a href="digital-twin-simulator.html" class="demo-btn">Open demo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about">
+            <h2>About Marian Diaz</h2>
+            <div class="about-section">
+                <div class="about-content">
+                    <div class="profile-info">
+                        <h3>FACILITATOR & CREATOR</h3>
+                        <p style="color: #667eea; font-weight: 600; margin-bottom: 2rem;">Technology, data & innovation enthusiast</p>
+                    </div>
+                    <div class="profile-description">
+                        <p>Passionate about the intersection of technology, global perspectives, and strategic problem-solving. I studied Telecommunications Engineering at UGR (Granada) and completed my Master’s Degree at ICAI (Comillas Pontifical University, Madrid).</p>
+                        <p>My journey has been defined by a global outlook—spending a year in Sweden (Linköping University) during my degree and another year in Santiago de Chile during my Master's. </p>
+                        <p>I enjoy solving complex problems, analyzing data, and creating educational experiences that bridge the gap between theory and practice in digital transformation initiatives.</p>
+                    </div>
+                    <a href="https://www.linkedin.com/in/mariandiazromero" class="contact-btn">Connect with me on LinkedIn</a>
+                    <p style="margin-top: 2rem; color: #666;">Based in Madrid - Open to collaboration, teaching & experimentation.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Digital Twin Educational Demos - Marian Diaz. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

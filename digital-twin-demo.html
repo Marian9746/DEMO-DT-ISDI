@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin Demo - Hydroelectric Power Turbine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .status-bar {
+            background: #28a745;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .turbine-diagram {
+            text-align: center;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .metrics-table th,
+        .metrics-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .metrics-table th {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .status-ok {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-warn {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .status-crit {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .slider {
+            width: 200px;
+            height: 5px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .slider {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Digital Twin Demo — Hydroelectric Power Turbine</h1>
+            <p>Representation of a hydroelectric turbine with head and gate opening parameters.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to main page</a>
+        
+        <div class="status-bar">
+            <div>
+                <strong>RUNNING</strong> | Frequency: <span id="frequency">5</span> Hz
+            </div>
+            <div>
+                Last update: <span id="lastUpdate">--:--:--</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>TURBINE DIAGRAM</h2>
+                <div class="turbine-diagram">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🌊⚙️⚡</div>
+                    <p><strong>Load:</strong> <span id="loadDisplay">50</span>%</p>
+                    <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                        Water inlet → Turbine casing → Generator → Electrical output
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="gateSlider">Gate opening: <span id="gateValue">40</span>%</label>
+                        <input type="range" id="gateSlider" class="slider" min="0" max="100" value="40">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="headSlider">Hydraulic head: <span id="headValue">40</span>m</label>
+                        <input type="range" id="headSlider" class="slider" min="20" max="60" value="40">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>OPERATIONAL STATUS</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span><strong>Mode:</strong> AUTO</span>
+                    <span><strong>Alerts:</strong> <span id="alertCount">0</span></span>
+                </div>
+                
+                <div id="statusAlerts">
+                    <div class="alert alert-success">
+                        <strong>Temperature</strong> OK<br>
+                        Normal operation (<span id="tempStatus">68.0</span>°C).
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <strong>RPM</strong> OK<br>
+                        Stable speed (<span id="rpmStatus">830</span> rpm).
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <strong>Flow</strong> OK<br>
+                        Adequate inlet (<span id="flowStatus">18.84</span> m³/s).
+                    </div>
+                </div>
+                
+                <p style="font-size: 0.9rem; color: #666; margin-top: 1rem;">
+                    Alerts trigger when any signal enters WARN or CRIT.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2>KEY METRICS</h2>
+                <div class="controls" style="margin-bottom: 1rem;">
+                    <button class="btn btn-secondary" onclick="pauseSimulation()">Pause</button>
+                    <button class="btn btn-primary" onclick="resetSimulation()">Reset</button>
+                </div>
+                
+                <table class="metrics-table">
+                    <tr>
+                        <td>Inlet flow</td>
+                        <td class="status-ok">OK</td>
+                        <td><span id="currentFlow">18.84</span> m³/s</td>
+                    </tr>
+                    <tr>
+                        <td>RPM</td>
+                        <td class="status-ok">OK</td>
+                        <td><span id="currentRpm">830</span> rpm</td>
+                    </tr>
+                    <tr>
+                        <td>Turbine temperature</td>
+                        <td class="status-ok">OK</td>
+                        <td><span id="currentTemp">68.0</span> °C</td>
+                    </tr>
+                    <tr>
+                        <td>Instant power</td>
+                        <td class="status-ok">OK</td>
+                        <td><span id="currentPower">6957</span> kW</td>
+                    </tr>
+                    <tr>
+                        <td>Gate opening</td>
+                        <td>-</td>
+                        <td><span id="currentGate">40</span>%</td>
+                    </tr>
+                    <tr>
+                        <td>Hydraulic head</td>
+                        <td>-</td>
+                        <td><span id="currentHead">40</span> m</td>
+                    </tr>
+                    <tr>
+                        <td>Noise</td>
+                        <td>-</td>
+                        <td><span id="currentNoise">2</span>%</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>TELEMETRY (MAXIMUM VALUES)</h2>
+                <p style="margin-bottom: 1rem; color: #666;">Since reset</p>
+                
+                <table class="metrics-table">
+                    <tr>
+                        <td>Q_in</td>
+                        <td><span id="maxFlow">18.86</span></td>
+                        <td>m³/s</td>
+                    </tr>
+                    <tr>
+                        <td>RPM</td>
+                        <td><span id="maxRpm">836</span></td>
+                        <td>rpm</td>
+                    </tr>
+                    <tr>
+                        <td>T_turb</td>
+                        <td><span id="maxTemp">68.1</span></td>
+                        <td>°C</td>
+                    </tr>
+                    <tr>
+                        <td>P_out</td>
+                        <td><span id="maxPower">6959</span></td>
+                        <td>kW</td>
+                    </tr>
+                    <tr>
+                        <td>Efficiency</td>
+                        <td><span id="maxEfficiency">94.1</span></td>
+                        <td>%</td>
+                    </tr>
+                    <tr>
+                        <td>Head</td>
+                        <td><span id="maxHead">40</span></td>
+                        <td>m</td>
+                    </tr>
+                </table>
+                
+                <p style="font-size: 0.9rem; color: #666; margin-top: 1rem;">
+                    Max values update continuously and reset with Reset.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2>OPTIMIZATION</h2>
+                <button class="btn btn-primary" onclick="optimizeBehavior()" style="margin-bottom: 1rem;">
+                    Optimize behavior
+                </button>
+                <p style="margin-bottom: 1rem;">Status: <span id="optimizationStatus">IDLE</span></p>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                    Click Optimize behavior to simulate gate/head combinations and find the setpoint that maximizes power without triggering any alerts.
+                </p>
+                
+                <table class="metrics-table">
+                    <tr>
+                        <td>Optimal gate</td>
+                        <td><span id="optimalGate">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Optimal head</td>
+                        <td><span id="optimalHead">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Max safe power</td>
+                        <td><span id="maxSafePower">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Estimated flow</td>
+                        <td><span id="estimatedFlow">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Estimated RPM</td>
+                        <td><span id="estimatedRpm">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Estimated temp</td>
+                        <td><span id="estimatedTemp">—</span></td>
+                    </tr>
+                </table>
+                
+                <p style="font-size: 0.9rem; color: #666; margin-top: 1rem;">
+                    "No alerts" criteria: Q > WARN, RPM < WARN, Temp < WARN.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isRunning = true;
+        let currentData = {
+            flow: 18.84,
+            rpm: 830,
+            temp: 68.0,
+            power: 6957,
+            gate: 40,
+            head: 40,
+            noise: 2,
+            efficiency: 94.1
+        };
+        
+        let maxData = {
+            flow: 18.86,
+            rpm: 836,
+            temp: 68.1,
+            power: 6959,
+            efficiency: 94.1,
+            head: 40
+        };
+
+        function updateDisplay() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
+            
+            // Update current values
+            document.getElementById('currentFlow').textContent = currentData.flow.toFixed(2);
+            document.getElementById('currentRpm').textContent = Math.round(currentData.rpm);
+            document.getElementById('currentTemp').textContent = currentData.temp.toFixed(1);
+            document.getElementById('currentPower').textContent = Math.round(currentData.power);
+            document.getElementById('currentGate').textContent = currentData.gate;
+            document.getElementById('currentHead').textContent = currentData.head;
+            document.getElementById('currentNoise').textContent = currentData.noise;
+            
+            // Update status displays
+            document.getElementById('tempStatus').textContent = currentData.temp.toFixed(1);
+            document.getElementById('rpmStatus').textContent = Math.round(currentData.rpm);
+            document.getElementById('flowStatus').textContent = currentData.flow.toFixed(2);
+            
+            // Update max values
+            document.getElementById('maxFlow').textContent = maxData.flow.toFixed(2);
+            document.getElementById('maxRpm').textContent = Math.round(maxData.rpm);
+            document.getElementById('maxTemp').textContent = maxData.temp.toFixed(1);
+            document.getElementById('maxPower').textContent = Math.round(maxData.power);
+            document.getElementById('maxEfficiency').textContent = maxData.efficiency.toFixed(1);
+            document.getElementById('maxHead').textContent = maxData.head;
+            
+            document.getElementById('loadDisplay').textContent = Math.round((currentData.power / 8000) * 100);
+        }
+
+        function simulateData() {
+            if (!isRunning) return;
+            
+            // Add small random variations
+            currentData.flow += (Math.random() - 0.5) * 0.2;
+            currentData.rpm += (Math.random() - 0.5) * 10;
+            currentData.temp += (Math.random() - 0.5) * 0.5;
+            
+            // Calculate power based on gate and head
+            const baseFlow = 15 + (currentData.gate / 100) * 10 + (currentData.head - 30) * 0.3;
+            const baseRpm = 800 + (currentData.gate / 100) * 100 + (currentData.head - 30) * 2;
+            const baseTemp = 65 + (currentData.gate / 100) * 8 + Math.max(0, currentData.head - 45) * 0.5;
+            
+            currentData.flow = Math.max(0, baseFlow + (Math.random() - 0.5) * 2);
+            currentData.rpm = Math.max(0, baseRpm + (Math.random() - 0.5) * 20);
+            currentData.temp = Math.max(20, baseTemp + (Math.random() - 0.5) * 2);
+            currentData.power = Math.max(0, currentData.flow * currentData.rpm * 0.5);
+            currentData.efficiency = Math.min(95, 85 + (currentData.gate / 100) * 10 - Math.max(0, currentData.temp - 70) * 0.5);
+            
+            // Update max values
+            if (currentData.flow > maxData.flow) maxData.flow = currentData.flow;
+            if (currentData.rpm > maxData.rpm) maxData.rpm = currentData.rpm;
+            if (currentData.temp > maxData.temp) maxData.temp = currentData.temp;
+            if (currentData.power > maxData.power) maxData.power = currentData.power;
+            if (currentData.efficiency > maxData.efficiency) maxData.efficiency = currentData.efficiency;
+            
+            updateDisplay();
+        }
+
+        function pauseSimulation() {
+            isRunning = !isRunning;
+            const btn = event.target;
+            btn.textContent = isRunning ? 'Pause' : 'Resume';
+        }
+
+        function resetSimulation() {
+            maxData = {
+                flow: currentData.flow,
+                rpm: currentData.rpm,
+                temp: currentData.temp,
+                power: currentData.power,
+                efficiency: currentData.efficiency,
+                head: currentData.head
+            };
+            updateDisplay();
+        }
+
+        function optimizeBehavior() {
+            document.getElementById('optimizationStatus').textContent = 'RUNNING';
+            
+            setTimeout(() => {
+                // Simulate optimization results
+                const optimalGate = Math.round(60 + Math.random() * 20);
+                const optimalHead = Math.round(45 + Math.random() * 10);
+                
+                document.getElementById('optimalGate').textContent = optimalGate + '%';
+                document.getElementById('optimalHead').textContent = optimalHead + 'm';
+                document.getElementById('maxSafePower').textContent = Math.round(7200 + Math.random() * 500) + ' kW';
+                document.getElementById('estimatedFlow').textContent = (19 + Math.random() * 2).toFixed(2) + ' m³/s';
+                document.getElementById('estimatedRpm').textContent = Math.round(850 + Math.random() * 30) + ' rpm';
+                document.getElementById('estimatedTemp').textContent = (69 + Math.random() * 2).toFixed(1) + '°C';
+                
+                document.getElementById('optimizationStatus').textContent = 'COMPLETE';
+            }, 2000);
+        }
+
+        // Event listeners for sliders
+        document.getElementById('gateSlider').addEventListener('input', function() {
+            currentData.gate = parseInt(this.value);
+            document.getElementById('gateValue').textContent = this.value;
+        });
+
+        document.getElementById('headSlider').addEventListener('input', function() {
+            currentData.head = parseInt(this.value);
+            document.getElementById('headValue').textContent = this.value;
+        });
+
+        // Start simulation
+        setInterval(simulateData, 1000);
+        updateDisplay();
+    </script>
+</body>
+</html>

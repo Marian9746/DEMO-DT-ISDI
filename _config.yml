@@ -1,0 +1,23 @@
+name: Digital Twins Educational Website
+description: Interactive demos for learning Digital Twin concepts through hands-on simulations
+url: "https://[username].github.io"
+baseurl: "/demo-DT"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Exclude from processing
+exclude:
+  - .github/
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+
+# Include custom files
+include:
+  - digital-twin-demo.html
+  - digital-twin-simulator.html
