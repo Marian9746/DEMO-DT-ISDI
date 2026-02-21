@@ -39,8 +39,7 @@ demo-DT/
 ├── digital-twin-demo.html        # Turbine simulation demo
 ├── digital-twin-simulator.html   # Sensor & alert system demo
 ├── README.md                     # Project documentation
-
-
+```
 ## 🎓 Educational Use
 
 This website is designed for:
@@ -73,4 +72,4 @@ This project is for educational purposes. Feel free to use, modify, and share fo
 
 ---
 
-**Ready to explore Digital Twins?** Start with the [live demo](https://[your-username].github.io/demo-DT/) and dive into interactive simulations!
+**Ready to explore Digital Twins?** Start with the [live demo](https://Marian9746.github.io/demo-DT/) and dive into interactive simulations!
