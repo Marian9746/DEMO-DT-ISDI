@@ -14,7 +14,7 @@ Originally created by Eduard Torres, this version has been customized by **Maria
 
 ## 🚀 Live Demo
 
-Visit the live site: `https://[your-username].github.io/demo-DT/`
+Visit the live site: `https://Marian9746.github.io/demo-DT/`
 
 ## 📋 Features
 

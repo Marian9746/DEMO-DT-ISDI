@@ -74,7 +74,7 @@ Antes de publicar, actualiza estos datos en los archivos:
 ## 🎉 ¡Listo para usar!
 
 Una vez desplegado, cualquier persona podrá:
-- Acceder a `https://TU-USUARIO.github.io/demo-DT/`
+- Acceder a `https://Marian9746.github.io/demo-DT/`
 - Usar las demos interactivas
 - Aprender sobre Digital Twins
 - Compartir el enlace con estudiantes
